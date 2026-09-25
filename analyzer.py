@@ -10,9 +10,16 @@ def parse_arguments():
         help="Path to the log file"
     )
     
+    parser.add_argument(
+        "-1",
+        "--level",
+        choices=["INFO", "WARNING", "ERROR"],
+        help="Only include entries with this log level"
+    )
+    
     return parser.parse_args()
 
-def analyze_log_file(filename):
+def analyze_log_file(filename, level_filter=None):
     counts = {
         "INFO": 0,
         "WARNING": 0,
@@ -36,6 +43,9 @@ def analyze_log_file(filename):
                 if level not in counts:
                     print(f"Skipping invalid log level: {cleaned_line}")
                     continue
+                
+                if level_filter is not None and level != level_filter:
+                    continue
 
                 counts[level] += 1
                 total_entries += 1
@@ -52,4 +62,4 @@ def analyze_log_file(filename):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    analyze_log_file(args.filename)
+    analyze_log_file(args.filename, args.level)
