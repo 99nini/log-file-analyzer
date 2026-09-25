@@ -1,4 +1,16 @@
-import sys
+import argparse
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="Analyze a log file and summarise its entries."
+    )
+    
+    parser.add_argument(
+        "filename",
+        help="Path to the log file"
+    )
+    
+    return parser.parse_args()
 
 def analyze_log_file(filename):
     counts = {
@@ -38,7 +50,6 @@ def analyze_log_file(filename):
     except FileNotFoundError:
         print(f"Error: Could not find '{filename}'.")
 
-if len(sys.argv) != 2:
-    print("Usage: python analyzer.py <log-file>")
-else:
-    analyze_log_file(sys.argv[1])
+if __name__ == "__main__":
+    args = parse_arguments()
+    analyze_log_file(args.filename)
