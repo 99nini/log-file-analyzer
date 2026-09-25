@@ -1,3 +1,5 @@
+import sys
+
 def analyze_log_file(filename):
     counts = {
         "INFO": 0,
@@ -36,4 +38,7 @@ def analyze_log_file(filename):
     except FileNotFoundError:
         print(f"Error: Could not find '{filename}'.")
 
-analyze_log_file("sample.log")
+if len(sys.argv) != 2:
+    print("Usage: python analyzer.py <log-file>")
+else:
+    analyze_log_file(sys.argv[1])
