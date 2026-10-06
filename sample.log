@@ -6,3 +6,4 @@
 2026-09-13 10:21:08 ERROR Connection attempt failed
 This is a malformed line
 2026-09-13 10:22:30 INFO Application stopped
+not-a-date 10:00:00 ERROR Invalid timestamp test

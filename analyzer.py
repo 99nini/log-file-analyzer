@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
@@ -44,6 +45,14 @@ def analyze_log_file(filename, level_filter=None):
                     print(f"Skipping invalid log level: {cleaned_line}")
                     continue
                 
+                timestamp_text = f"{date} {time}"
+                
+                try:
+                    converted_timestring = datetime.strptime(timestamp_text, "%Y-%m-%d %H:%M:%S")
+                except ValueError:
+                    print(f"Skipping invalid timestamp: {cleaned_line}")
+                    continue
+                
                 if level_filter is not None and level != level_filter:
                     continue
 
@@ -63,3 +72,4 @@ def analyze_log_file(filename, level_filter=None):
 if __name__ == "__main__":
     args = parse_arguments()
     analyze_log_file(args.filename, args.level)
+    
