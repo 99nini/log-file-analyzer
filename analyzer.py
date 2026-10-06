@@ -18,14 +18,20 @@ def parse_arguments():
         help="Only include entries with this log level"
     )
     
+    parser.add_argument(
+        "--start-date",
+        help="Only include entries on or after this date"
+    )
+    
     return parser.parse_args()
 
-def analyze_log_file(filename, level_filter=None):
+def analyze_log_file(filename, level_filter=None, start_date=None):
     counts = {
         "INFO": 0,
         "WARNING": 0,
         "ERROR": 0
     }
+    print(f"Start date received: {start_date}")
 
     total_entries = 0
 
@@ -53,6 +59,9 @@ def analyze_log_file(filename, level_filter=None):
                     print(f"Skipping invalid timestamp: {cleaned_line}")
                     continue
                 
+                if start_date is not None and converted_timestring < start_date:
+                    continue
+                
                 if level_filter is not None and level != level_filter:
                     continue
 
@@ -71,5 +80,10 @@ def analyze_log_file(filename, level_filter=None):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    analyze_log_file(args.filename, args.level)
+    
+    start_date = None
+    if args.start_date is not None:
+        start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
+    
+    analyze_log_file(args.filename, args.level, start_date)
     
