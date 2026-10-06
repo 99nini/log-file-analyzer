@@ -23,15 +23,19 @@ def parse_arguments():
         help="Only include entries on or after this date"
     )
     
+    parser.add_argument(
+        "--end-date",
+        help="Only include enteries on or before this date"
+    )
+    
     return parser.parse_args()
 
-def analyze_log_file(filename, level_filter=None, start_date=None):
+def analyze_log_file(filename, level_filter=None, start_date=None, end_date = None):
     counts = {
         "INFO": 0,
         "WARNING": 0,
         "ERROR": 0
     }
-    print(f"Start date received: {start_date}")
 
     total_entries = 0
 
@@ -62,6 +66,9 @@ def analyze_log_file(filename, level_filter=None, start_date=None):
                 if start_date is not None and converted_timestring < start_date:
                     continue
                 
+                if end_date is not None and converted_timestring.date() > end_date.date():
+                    continue
+                
                 if level_filter is not None and level != level_filter:
                     continue
 
@@ -85,5 +92,9 @@ if __name__ == "__main__":
     if args.start_date is not None:
         start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
     
-    analyze_log_file(args.filename, args.level, start_date)
+    end_date = None
+    if args.end_date is not None:
+        end_date = datetime.strptime(args.end_date, "%Y-%m-%d")
+    
+    analyze_log_file(args.filename, args.level, start_date, end_date)
     
