@@ -29,9 +29,16 @@ def parse_arguments():
         help="Only include enteries on or before this date"
     )
     
+    parser.add_argument(
+        "--top",
+        type=int,
+        default=3,
+        help="Number of common errors to display"
+    )
+    
     return parser.parse_args()
 
-def analyze_log_file(filename, level_filter=None, start_date=None, end_date = None):
+def analyze_log_file(filename, level_filter=None, start_date=None, end_date = None, top_n = 3):
     counts = {
         "INFO": 0,
         "WARNING": 0,
@@ -94,11 +101,11 @@ def analyze_log_file(filename, level_filter=None, start_date=None, end_date = No
                 for entry in skipped_entries:
                     print(entry)        
                     
-            top_errors = error_messages.most_common(3)
+            top_errors = error_messages.most_common(top_n)
             print("\nMost Common Errors")
             print("-" * 30)
-            for message, count in top_errors:
-                print(f"{message}: {count}")
+            for position, (message, count) in enumerate(top_errors, start=1):
+                print(f"{position}. {message}: {count}")
         
         print("\nLog Summary")
         print("-" * 30)
@@ -121,4 +128,4 @@ if __name__ == "__main__":
     if args.end_date is not None:
         end_date = datetime.strptime(args.end_date, "%Y-%m-%d")
     
-    analyze_log_file(args.filename, args.level, start_date, end_date)
+    analyze_log_file(args.filename, args.level, start_date, end_date, args.top)
