@@ -1,9 +1,9 @@
-2026-09-13 10:15:03 INFO Application started
-2026-09-13 10:16:21 INFO User logged in
-2026-09-13 10:18:47 WARNING Disk space is running low
-2026-09-13 10:20:12 ERROR Could not connect to database
-2026-09-13 10:21:05 INFO Retrying connection
-2026-09-13 10:21:08 ERROR Connection attempt failed
+2026-09-13 10:15:03 INFO application Application started
+2026-09-13 10:16:21 INFO authentication User logged in
+2026-09-13 10:18:47 WARNING storage Disk space is running low
+2026-09-13 10:20:12 ERROR database Could not connect to database
+2026-09-13 10:21:05 INFO application Retrying connection
+2026-09-13 10:21:08 ERROR authentication Connection attempt failed
 This is a malformed line
-2026-09-13 10:22:30 INFO Application stopped
+2026-09-13 10:22:30 INFO application Application stopped
 not-a-date 10:00:00 ERROR Invalid timestamp test

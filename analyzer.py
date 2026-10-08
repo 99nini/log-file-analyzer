@@ -28,7 +28,7 @@ def parse_arguments():
         "--end-date",
         help="Only include enteries on or before this date"
     )
-    
+
     parser.add_argument(
         "--top",
         type=int,
@@ -44,24 +44,25 @@ def analyze_log_file(filename, level_filter=None, start_date=None, end_date = No
         "WARNING": 0,
         "ERROR": 0
     }
-
+    
     total_entries = 0
     skipped_entries = []
     error_messages = Counter()
+    service_errors = Counter()
 
     try:
         with open(filename, "r", encoding="utf-8") as log_file:
             for line in log_file:
                 cleaned_line = line.strip()
-                parts = cleaned_line.split(" ", 3)
+                parts = cleaned_line.split(" ", 4)
 
-                if len(parts) != 4:
+                if len(parts) != 5:
                     skipped_entries.append(
                         f"Malformed line: {cleaned_line}"
                     )
                     continue
-
-                date, time, level, message = parts
+                
+                date, time, level, service, message = parts
 
                 if level not in counts:
                     skipped_entries.append(
@@ -87,12 +88,14 @@ def analyze_log_file(filename, level_filter=None, start_date=None, end_date = No
                 
                 if level_filter is not None and level != level_filter:
                     continue
-
+                
                 counts[level] += 1
                 total_entries += 1
                 
                 if level == "ERROR":
                     error_messages[message] +=1
+                    service_errors[service] +=1
+                    
                     
             if skipped_entries:
                 print("\nSkipped Entries")
@@ -100,12 +103,18 @@ def analyze_log_file(filename, level_filter=None, start_date=None, end_date = No
 
                 for entry in skipped_entries:
                     print(entry)        
-                    
+
             top_errors = error_messages.most_common(top_n)
             print("\nMost Common Errors")
             print("-" * 30)
             for position, (message, count) in enumerate(top_errors, start=1):
                 print(f"{position}. {message}: {count}")
+                
+            top_service_errors = service_errors.most_common()
+            print("\nTop Error-Producing Services")
+            print("-" * 30)
+            for position, (service, count) in enumerate(top_service_errors, start=1):
+                print(f"{position}. {service}: {count}")
         
         print("\nLog Summary")
         print("-" * 30)
@@ -123,9 +132,9 @@ if __name__ == "__main__":
     start_date = None
     if args.start_date is not None:
         start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
-    
+
     end_date = None
     if args.end_date is not None:
         end_date = datetime.strptime(args.end_date, "%Y-%m-%d")
-    
+
     analyze_log_file(args.filename, args.level, start_date, end_date, args.top)
